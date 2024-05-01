@@ -1,0 +1,158 @@
+<!-- <section class="content">
+  <div class="content-block">
+    <div class="block-header">
+      <app-breadcrumb [title]="'Chat'" [items]="['Home']" [active_item]="'Chat'"></app-breadcrumb>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+        <div class="card">
+          <div class="body">
+            <div id="plist" class="people-list">
+              <div class="form-line m-b-15" style="display: flex; align-items: center;">
+                <input type="text" class="form-control" placeholder="Add Room" name="roomName" [(ngModel)]="roomName"/>
+                <button mat-icon-button (click)="addRoom()" [disabled]="!roomName" fill="clear" size="large" slot="end">
+                  <app-feather-icons [icon]="'plus-circle'" [class]="'tbl-fav-delete'"></app-feather-icons>
+                </button>
+              </div>
+              
+              <div class="tab-content">
+                <ng-scrollbar style="height: 590px" visibility="hover">
+                  <div id="chat_rooms">
+                    <ul class="chat-list list-unstyled m-b-0">
+                      <li class="clearfix" *ngFor="let room of rooms" (click)="joinRoom(room)">
+                        <div class="about">
+                          <div class="name">{{ room.name }}</div>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </ng-scrollbar>
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+        <div class="card">
+          <div class="chat">
+            <div class="chat-header clearfix">
+              <img src="assets/images/user/user2.jpg" alt="avatar">
+              <div class="chat-about">
+                <div class="chat-with">{{ selectedRoom ? selectedRoom.name : 'Select a room' }}</div>
+              </div>
+            </div>
+            <ng-scrollbar style="height: 450px" visibility="hover">
+              <div class="chat-history" id="chat-conversation">
+                <ion-grid>
+                  <ion-row *ngFor="let message of messages">
+                    <div class="message" [ngClass]="{'my_message': message.owner?.firstName === nickname, 'other_message': message.owner?.firstName !== nickname}">
+                      <span class="user_name">{{ message.owner?.firstName }}:</span><br>
+                      <span>{{ message.text }}</span>
+                      <div class="time">{{ message.created | date:'dd.MM hh:mm'}}</div>
+                    </div>
+                  </ion-row>
+                </ion-grid>
+              </div>
+            </ng-scrollbar>
+            <div class="chat-message clearfix">
+              <div class="form-group">
+                <div class="form-line">
+                  <mat-form-field class="example-full-width" appearance="outline" [hideRequiredMarker]="hideRequiredControl.value">
+                    <input matInput placeholder="Enter text here.." required [(ngModel)]="message" (keyup)="stopTyping()">
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="chat-upload">
+                <button mat-mini-fab class="bg-deep-orange msr-2"> <i class="material-icons">attach_file</i></button>
+                <button mat-mini-fab class="bg-deep-orange"> <i class="material-icons">insert_emoticon</i></button>
+              </div>
+              <button mat-mini-fab class="bg-deep-orange" (click)="sendMessage()" [disabled]="!message"> <i class="material-icons">send</i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</section> -->
+<section class="content">
+  <div class="content-block">
+    <div class="block-header">
+      <!-- breadcrumb -->
+      <app-breadcrumb [title]="'Chat'" [items]="['Home']" [active_item]="'Chat'"></app-breadcrumb>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+        <div class="card">
+          <div class="body">
+            <div id="plist" class="people-list">
+              <div class="form-line m-b-15" style="display: flex; align-items: center;">
+                <input type="text" class="form-control" placeholder="Add Room" name="roomName" [(ngModel)]="roomName"/>
+                <button mat-icon-button (click)="addRoom()" [disabled]="!roomName" fill="clear" size="large" slot="end">
+                  <app-feather-icons [icon]="'plus-circle'" [class]="'tbl-fav-delete'"></app-feather-icons>
+                </button>
+              </div>
+                <div class="tab-content">
+                <ng-scrollbar style="height: 590px" visibility="hover" >
+                  <div id="chat_rooms">
+                    <ul class="chat-list list-unstyled m-b-0">
+                      <li class="clearfix" *ngFor="let room of rooms"  (click)="searchRoom(room._id)">
+                        <div class="about">
+                          <div class="name">{{ room.name }}</div>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </ng-scrollbar>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+        <div class="card">
+          <div class="chat">
+            <div class="chat-header clearfix">
+              <img src="assets/images/user/user2.jpg" alt="avatar">
+              <div class="chat-about">
+                <div class="chat-with">{{ selectedRoom ? selectedRoom.name : 'Select a room' }}</div>
+                <!-- Affichez ici d'autres détails de la salle si nécessaire -->
+              </div>
+            </div>
+            <ng-scrollbar style="height: 450px" visibility="hover">
+              <div class="chat-history" id="chat-conversation">
+                <ion-grid>
+                  <ion-row *ngFor="let message of messages">
+                    <div class="message" [ngClass]="{'my_message': message.owner?.firstName === nickname, 'other_message': message.owner?.firstName !== nickname}">
+                      <span class="user_name">{{ message.owner?.firstName }}:</span><br>
+                      <span>{{ message.text }}</span>
+                      <div class="time">{{ message.created | date:'dd.MM hh:mm'}}</div>
+                    </div>
+                  </ion-row>
+                </ion-grid>
+              </div>
+            </ng-scrollbar>
+            <div class="chat-message clearfix">
+              <div class="form-group">
+                <div class="form-line">
+                  <mat-form-field class="example-full-width" appearance="outline" [hideRequiredMarker]="hideRequiredControl.value">
+                    <input matInput placeholder="Enter text here.." required [(ngModel)]="message" (keyup)="stopTyping()">
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="chat-upload">
+                <button mat-mini-fab class="bg-deep-orange msr-2"> <i class="material-icons">attach_file</i></button>
+                <button mat-mini-fab class="bg-deep-orange"> <i class="material-icons">insert_emoticon</i></button>
+              </div>
+              <button mat-mini-fab class="bg-deep-orange" (click)="sendMessage()" [disabled]="!message"> <i class="material-icons">send</i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</section>

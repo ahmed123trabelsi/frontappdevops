@@ -1,0 +1,249 @@
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialogContent, MatDialogClose } from '@angular/material/dialog';
+import { Component, EventEmitter, Inject, Output } from '@angular/core';
+import { EstimatesService } from '../../estimates.service';
+import { UntypedFormControl, Validators, UntypedFormGroup, UntypedFormBuilder, FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
+import Swal from 'sweetalert2';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { TASK_ROUTE } from 'app/task/task.routes';
+import { TasksModel } from 'app/admin/projects/all-projects/core/project.model';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ProjectService } from 'app/admin/projects/all-projects/core/project.service';
+import { AuthService } from '@core';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { map, startWith } from 'rxjs';
+export interface DialogData {
+  id: number;
+  action: string;
+  task: any;
+  taskId:string;
+  idProject:string;
+  idP:any;
+  tasks:TasksModel[]
+}
+
+@Component({
+    selector: 'app-form-dialog:not(k)',
+    templateUrl: './form-dialog.component.html',
+    styleUrls: ['./form-dialog.component.scss'],
+    standalone: true,
+    imports: [
+        MatButtonModule,
+        MatIconModule,
+        MatDialogContent,
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatDatepickerModule,
+        MatSelectModule,
+        MatOptionModule,
+        MatDialogClose,
+        MatAutocompleteModule
+    ],
+})
+export class FormDialogComponent {
+ 
+  action!: string; 
+  dialogTitle!: string; 
+  taskForm!: UntypedFormGroup ;
+taskAdd!:any
+  task:any;
+  user!:any
+  users:any[]=[]
+  p!:any
+  idEmployee!:string
+  filteredUsers: any[] = [];
+  employeeAffected = new FormControl();
+
+  constructor(
+    public dialogRef: MatDialogRef<FormDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    public estimatesService: EstimatesService,
+    private fb: UntypedFormBuilder,
+    private actR : ActivatedRoute,
+    private authService:AuthService,
+    private projectService: ProjectService,
+  ) {
+
+  }
+/*   estimates: Estimates; */
+  ngOnInit(): void {
+    this.filteredUsers = this.users; // Initialize your filtered users
+    
+
+    this.authService.getAllUsers().subscribe((data) => {
+      this.users = data.filter((user) => user.role && Array.isArray(user.role) && user.role.includes('Employee'));
+      this.filteredUsers = [...this.users]; // Initialize filtered list
+    })
+    this.actR.params.subscribe(params => {
+      const _id = params['_id'];
+      this.projectService.getProjectById(this.data.idP).subscribe(data => {
+        this.data.tasks= data.tasks; 
+   
+      });
+    });
+ 
+    this.taskForm = this.fb.group({
+  
+      NomTask: ['', [Validators.required]],
+      priority: [''],
+  
+      startDate: ['', [Validators.required]],
+      FinishDate: ['', [Validators.required]],
+  
+      statut: [''],
+       description: ['', [Validators.required]],
+       employeeAffected:['', [Validators.required]],
+       projectId: [this.data.idProject],
+     
+       
+    
+
+  
+    });
+ // Ensure taskForm is initialized and employeeAffected control exists before subscribing to valueChanges
+if (this.taskForm && this.taskForm.get('employeeAffected')) {
+  this.taskForm.get('employeeAffected')?.valueChanges.subscribe((email: string) => {
+    this.authService.getUserByEmail(email).subscribe((data) => {
+      this.idEmployee = data._id;
+      // Now `this.idEmployee` is set reactively based on form changes.
+    });
+  });
+}
+
+    this.action =this.data.action;
+    if (this.action === 'edit' && this.data.taskId) {
+      this.authService.getUserByTaskId( this.data.taskId).subscribe((datauser) => {
+this.user=datauser
+      });
+      this.estimatesService.getTaskById(this.data.taskId).subscribe((dataa) => {
+         
+       
+        this.task = dataa;
+        this.dialogTitle =  this.task.NomTask;
+        const T= {
+           _id:this.task._id,
+           NomTask: this.task.NomTask,
+          description: this.task.description,
+          startDate : this.task.startDate,
+          FinishDate : this.task.FinishDate,
+          statut : this.task.statut ,
+          priority : this.task.priority  ,
+          employeeAffected : this.user.email ,
+    
+        };
+/*     console.log(TSansU) */
+    this.taskForm.patchValue(T);
+
+      })
+
+    } else {
+      this.dialogTitle = 'New task';
+
+    }
+  
+
+  }
+
+ 
+ 
+  filterUsers(event: Event): void {
+    // Effectuez une assertion de type pour indiquer à TypeScript que target est un élément d'input
+    const target = event.target as HTMLInputElement;
+  
+    // Vérifiez si target n'est pas null avant d'essayer d'accéder à value
+    const searchValue = target ? target.value : '';
+  
+    if (!searchValue) {
+      this.filteredUsers = this.users; // Aucune valeur de recherche, affichez tous les utilisateurs
+    } else {
+      // Filtrer les utilisateurs
+      this.filteredUsers = this.users.filter(user =>
+        user.email.toLowerCase().includes(searchValue.toLowerCase())
+      );
+    }
+  }
+
+
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+  public confirmAdd(): void {
+    if (this.data.taskId) {
+      this.updateT();
+      Object.assign(this.data.task, this.taskForm.value);
+    } else {
+      this.estimatesService.createTask2({
+        ...this.taskForm.value,
+        employeeAffected: this.idEmployee, // Replace the email with the userId
+      }).subscribe({
+        next: (newTask) => {
+          this.data.tasks.push(newTask);
+          this.dialogRef.close(this.data.tasks);
+          // SweetAlert2 success message
+          Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: 'Task has been added successfully!',
+            confirmButtonText: 'OK'
+          });
+        },
+        error: (error) => {
+          // SweetAlert2 error message
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Failed to create task. Please try again.',
+            confirmButtonText: 'OK'
+          });
+        }
+      });
+    }
+  }
+  updateT() {
+    const updatedValues = {
+      _id: this.taskForm.value._id,
+      NomTask: this.taskForm.value.NomTask,
+      description: this.taskForm.value.description,
+      startDate: this.taskForm.value.startDate, // Converts to string in specified format
+      FinishDate: this.taskForm.value.FinishDate,
+      statut: this.taskForm.value.statut,
+      priority: this.taskForm.value.priority,
+      employeeAffected: this.idEmployee
+    };
+  
+    this.estimatesService.updateTask(this.data.taskId, updatedValues).subscribe({
+      next: () => {
+        // Notify user of successful update
+        Swal.fire({
+          icon: 'success',
+          title: 'Updated',
+          text: 'Task updated successfully!',
+          confirmButtonText: 'OK'
+        });
+        // Optionally close dialog or refresh data here if needed
+        this.dialogRef.close(); // You can choose to close the dialog or refresh the component view
+      },
+      error: (error) => {
+        // Notify user of error
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Failed to update task. Please try again.',
+          confirmButtonText: 'OK'
+        });
+      
+      }
+    });
+  }
+  
+
+}
+
