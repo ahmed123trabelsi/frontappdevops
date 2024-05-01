@@ -3,12 +3,13 @@ import { BehaviorSubject, Observable, catchError } from 'rxjs';
 import { Candidates } from './candidates.model';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { UnsubscribeOnDestroyAdapter } from '@shared';
+import { environment } from 'environments/environment.development';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CandidatesService extends UnsubscribeOnDestroyAdapter {
-  private readonly API_URL = 'https://backdeploy-7y83.onrender.com/application';
+  private readonly API_URL = environment.apiUrl+"/application";
   downloadExcelUrl = `${this.API_URL}/download`;
   isTblLoading = true;
   dataChange: BehaviorSubject<Candidates[]> = new BehaviorSubject<Candidates[]>(

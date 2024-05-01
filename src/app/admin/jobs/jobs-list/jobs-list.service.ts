@@ -3,13 +3,14 @@ import { BehaviorSubject, Observable, map } from 'rxjs';
 import { JobsList, Skill } from './jobs-list.model';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { UnsubscribeOnDestroyAdapter } from '@shared';
+import { environment } from 'environments/environment.development';
 
 @Injectable({
   providedIn: 'root',
 })
 export class JobsListService extends UnsubscribeOnDestroyAdapter {
-  private readonly API_URL = 'https://backdeploy-7y83.onrender.com/job';
-  private readonly APII_URL = 'https://backdeploy-7y83.onrender.com/skill';
+  private readonly API_URL = environment.apiUrl+'/job';
+  private readonly APII_URL = environment.apiUrl+'/skill';
   isTblLoading = true;
   dataChange: BehaviorSubject<JobsList[]> = new BehaviorSubject<JobsList[]>([]);
   // Temporarily stores data from dialogs

@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { BreadcrumbComponent } from '@shared/components/breadcrumb/breadcrumb.component';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { environment } from 'environments/environment.development';
 @Component({
   selector: 'app-payslip',
   templateUrl: './payslip.component.html',
@@ -46,7 +47,7 @@ export class PayslipComponent {
 
 
   getPayslipData(payrollId: string) {
-    this.http.get<any>('https://backdeploy-7y83.onrender.com/payroll/getPayrollWithPayP/' + payrollId)
+    this.http.get<any>(environment.apiUrl+'/payroll/getPayrollWithPayP/' + payrollId)
       .subscribe(
         (response) => {
           this.payslipData = response;

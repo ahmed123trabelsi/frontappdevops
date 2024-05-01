@@ -2,12 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Message } from '../Models/message';
 import { Observable } from 'rxjs';
+import { environment } from 'environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MessageService {
-   apiUrl = 'https://backdeploy-7y83.onrender.com/api/messages'
+   apiUrl = environment.apiUrl+'/api/messages'
    private audio !: HTMLAudioElement;
 
   constructor(private http: HttpClient) { }

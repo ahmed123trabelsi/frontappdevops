@@ -1,12 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { environment } from 'environments/environment.development';
 import { Room } from '../Models/room';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RoomService {
-  apiUrl = 'https://backdeploy-7y83.onrender.com/api/'
+  apiUrl = environment.apiUrl+'/api/'
 
   constructor(private http: HttpClient) { }
 

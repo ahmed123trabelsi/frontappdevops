@@ -3,12 +3,13 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { EmployeeSalary } from './employee-salary.model';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { UnsubscribeOnDestroyAdapter } from '@shared';
+import { environment } from 'environments/environment.development';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EmployeeSalaryService extends UnsubscribeOnDestroyAdapter {
-   baseUrl = 'https://backdeploy-7y83.onrender.com/payroll';
+   baseUrl = environment.apiUrl+'/payroll';
   isTblLoading = true;
   dataChange: BehaviorSubject<EmployeeSalary[]> = new BehaviorSubject<
     EmployeeSalary[]
@@ -31,7 +32,7 @@ export class EmployeeSalaryService extends UnsubscribeOnDestroyAdapter {
   }
   getAllPayrollsWithUsersAndPoste(): void {
     this.subs.sink = this.httpClient
-      .get<EmployeeSalary[]>('https://backdeploy-7y83.onrender.com/payroll/withUsersAndPoste')
+      .get<EmployeeSalary[]>(environment.apiUrl+'/payroll/withUsersAndPoste')
       .subscribe({
         next: (data) => {
           this.isTblLoading = false;

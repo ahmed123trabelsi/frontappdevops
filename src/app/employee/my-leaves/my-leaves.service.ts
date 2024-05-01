@@ -3,6 +3,7 @@ import { MyLeaves } from './my-leaves.model';
 import { UnsubscribeOnDestroyAdapter } from '@shared';
 import {Injectable} from "@angular/core";
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
+import { environment } from 'environments/environment.development';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,7 @@ export class MyLeavesService extends UnsubscribeOnDestroyAdapter {
   private leaves: any[] = [];
   public leavesSubject: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
 
-  private readonly API_URL = 'https://backdeploy-7y83.onrender.com/Conge';
+  private readonly API_URL = environment.apiUrl+'/Conge';
   isTblLoading = true;
   dataChange: BehaviorSubject<MyLeaves[]> = new BehaviorSubject<MyLeaves[]>([]);
   // Temporarily stores data from dialogs

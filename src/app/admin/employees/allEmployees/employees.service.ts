@@ -3,13 +3,14 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Employees } from './employees.model';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { UnsubscribeOnDestroyAdapter } from '@shared';
+import { environment } from 'environments/environment.development';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EmployeesService extends UnsubscribeOnDestroyAdapter {
   
-  private apiUrl = 'https://backdeploy-7y83.onrender.com/auth'; // Remplacez cette URL par l'URL de votre backend
+  private apiUrl = environment.apiUrl+"/auth"; // Remplacez cette URL par l'URL de votre backend
 
   //private readonly API_URL = 'assets/data/employees.json';
   isTblLoading = true;

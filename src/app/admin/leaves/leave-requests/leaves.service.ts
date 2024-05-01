@@ -3,12 +3,13 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Leaves } from './leaves.model';
 import { HttpClient } from '@angular/common/http';
 import { UnsubscribeOnDestroyAdapter } from '@shared';
+import { environment } from 'environments/environment.development';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LeavesService extends UnsubscribeOnDestroyAdapter {
-  private readonly API_URL = 'https://backdeploy-7y83.onrender.com/Conge';
+  private readonly API_URL = environment.apiUrl+'/Conge';
 
   isTblLoading = true;
   dataChange: BehaviorSubject<Leaves[]> = new BehaviorSubject<Leaves[]>([]);

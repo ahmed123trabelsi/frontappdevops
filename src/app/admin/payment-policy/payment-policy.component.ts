@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { FormDialogComponent } from '../payment-policy/form-dialog/form-dialog.component';
+import { environment } from 'environments/environment.development';
 
 
 @Component({
@@ -33,7 +34,7 @@ export class PaymentPolicyComponent implements OnInit {
   }
 
   fetchPaymentPolicies(): void {
-    this.http.get<PaymentPolicy[]>('https://backdeploy-7y83.onrender.com/payment-policy').subscribe(
+    this.http.get<PaymentPolicy[]>(environment.apiUrl+'/payment-policy').subscribe(
       (data) => {
         this.paymentPolicies = data;
       },

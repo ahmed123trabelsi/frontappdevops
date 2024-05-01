@@ -5,12 +5,13 @@ import { map } from 'rxjs/operators';
 // import { PROJECTS } from "./project.data";
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { UnsubscribeOnDestroyAdapter } from '@shared';
+import { environment } from 'environments/environment.development';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProjectService extends UnsubscribeOnDestroyAdapter {
-  private baseUrl = 'https://backdeploy-7y83.onrender.com/project'; 
+  private baseUrl = environment.apiUrl+'/project'; 
   private trash: Set<number> = new Set([]); // trashed projects' id; set is better for unique ids
   // private _projects: BehaviorSubject<object[]> = new BehaviorSubject([]);
   private _projects = new BehaviorSubject<object[]>([]);

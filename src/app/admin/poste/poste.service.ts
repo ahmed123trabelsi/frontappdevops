@@ -3,12 +3,13 @@ import { Poste } from './Poste.model';
 import { BehaviorSubject, Observable, catchError, throwError } from 'rxjs';
 import { UnsubscribeOnDestroyAdapter } from '@shared';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { environment } from 'environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PosteService extends UnsubscribeOnDestroyAdapter {
-  baseUrl = 'https://backdeploy-7y83.onrender.com/post';
+  baseUrl = environment.apiUrl+'/post';
  isTblLoading = true;
  dataChange: BehaviorSubject<Poste[]> = new BehaviorSubject<
    Poste[]
@@ -27,7 +28,7 @@ export class PosteService extends UnsubscribeOnDestroyAdapter {
  /** CRUD METHODS */
  getAllPoste(): any {
    this.subs.sink = this.httpClient
-     .get<Poste[]>('https://backdeploy-7y83.onrender.com/post')
+     .get<Poste[]>(environment.apiUrl+'/post')
      .subscribe({
        next: (data) => {
          this.isTblLoading = false;

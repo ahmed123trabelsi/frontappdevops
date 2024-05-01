@@ -11,13 +11,14 @@ import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Attendances } from 'app/employee/attendance/attendance.model';
 import { User } from '@core';
+import { environment } from 'environments/environment.development';
 
 @Injectable({
   providedIn: 'root',
 })
 
 export class CalendarService {
-  private readonly API_URL = 'https://backdeploy-7y83.onrender.com/auth';
+  private readonly API_URL = environment.apiUrl+'/auth';
 
   // private readonly API_URL = 'assets/data/calendar.json';
   httpOptions = {
@@ -64,8 +65,8 @@ export class CalendarService {
   getAttendancesForUser(userId: string): Observable<Calendar[]> {
     return this.httpClient.get<Calendar[]>(this.API_URL + "/" +  userId);
   }
-  private readonly API_URL1 = 'https://backdeploy-7y83.onrender.com/holidays';
-  private readonly API_URL2 = 'https://backdeploy-7y83.onrender.com/attendance';
+  private readonly API_URL1 = environment.apiUrl+'/holidays';
+  private readonly API_URL2 = environment.apiUrl+'/attendance';
 
 
   getAllHolidays(): Observable<Holidayss[]> {
